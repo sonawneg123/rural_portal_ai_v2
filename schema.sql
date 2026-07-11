@@ -232,9 +232,9 @@ VALUES (
 
 -- ── Governance additional columns ─────────────────────────────
 ALTER TABLE users
-  ADD COLUMN IF NOT EXISTS taluka       VARCHAR(100) DEFAULT NULL AFTER district,
-  ADD COLUMN IF NOT EXISTS jurisdiction VARCHAR(500) DEFAULT NULL AFTER taluka,
-  ADD COLUMN IF NOT EXISTS constituency VARCHAR(200) DEFAULT NULL AFTER jurisdiction;
+  ADD COLUMN taluka VARCHAR(100) DEFAULT NULL AFTER district,
+  ADD COLUMN jurisdiction VARCHAR(500) DEFAULT NULL AFTER taluka,
+  ADD COLUMN constituency VARCHAR(200) DEFAULT NULL AFTER jurisdiction;
 
 ALTER TABLE problems
   ADD COLUMN IF NOT EXISTS taluka       VARCHAR(100) DEFAULT NULL AFTER village,
