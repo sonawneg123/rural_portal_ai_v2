@@ -1,0 +1,16 @@
+{
+  "short_name": "ग्रामीण पोर्टल",
+  "name": "ग्रामीण समस्या पोर्टल — Rural Problems Portal",
+  "description": "Report rural India problems. AI-scored severity. Track work progress.",
+  "icons": [
+    { "src": "favicon.ico", "sizes": "64x64 32x32 24x24 16x16", "type": "image/x-icon" },
+    { "src": "logo192.png", "type": "image/png", "sizes": "192x192" },
+    { "src": "logo512.png", "type": "image/png", "sizes": "512x512" }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#0A3D1F",
+  "background_color": "#F7F3EC",
+  "orientation": "portrait-primary",
+  "categories": ["government", "utilities", "social"]
+}
