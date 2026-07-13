@@ -1,0 +1,114 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Inter', system-ui, sans-serif; }
+  h1, h2, h3, h4, h5, h6 { font-family: 'DM Sans', system-ui, sans-serif; }
+  :focus-visible { outline: 2px solid #00D4B2; outline-offset: 2px; }
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 9999px; }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm
+           transition-all duration-200 cursor-pointer border-0 relative overflow-hidden
+           disabled:opacity-50 disabled:cursor-not-allowed active:scale-95;
+  }
+  .btn-navy   { @apply bg-navy text-white hover:bg-navy-light shadow-navy; }
+  .btn-teal   { @apply bg-teal text-navy font-bold hover:bg-teal-dark shadow-teal; }
+  .btn-purple { @apply bg-purple text-white hover:bg-purple-dark; }
+  .btn-outline { @apply bg-transparent text-navy border-2 border-navy hover:bg-navy hover:text-white; }
+  .btn-ghost  { @apply bg-slate-100 text-ink hover:bg-slate-200; }
+  .btn-danger { @apply bg-red-500 text-white hover:bg-red-600; }
+  .btn-sm     { @apply px-3.5 py-1.5 text-xs rounded-lg; }
+  .btn-lg     { @apply px-7 py-3.5 text-base rounded-2xl; }
+  .btn-icon   { @apply p-2 rounded-xl; }
+
+  .card { @apply bg-white rounded-2xl border border-slate-200 shadow-card transition-all duration-300; }
+  .card-hover { @apply hover:-translate-y-1 hover:shadow-lg; }
+
+  .input {
+    @apply w-full px-3.5 py-2.5 rounded-xl border-2 border-slate-300 bg-white text-ink text-sm
+           outline-none transition-all duration-150 placeholder:text-ink-40
+           focus:border-navy focus:ring-2 focus:ring-navy/10;
+  }
+  .input-label { @apply block text-xs font-semibold text-ink mb-1.5; }
+  .input-error { @apply border-red-400 focus:border-red-400 focus:ring-red-400/10; }
+
+  .badge {
+    @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold tracking-wide;
+  }
+  .badge-pending    { @apply bg-amber-50   text-amber-700; }
+  .badge-in_review  { @apply bg-blue-50    text-blue-700; }
+  .badge-in_progress { @apply bg-violet-50 text-violet-700; }
+  .badge-resolved   { @apply bg-emerald-50 text-emerald-700; }
+  .badge-rejected   { @apply bg-red-50     text-red-700; }
+
+  .role-badge { @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border; }
+  .role-cm        { @apply bg-navy text-white border-navy; }
+  .role-collector  { @apply bg-violet-50 text-violet-700 border-violet-200; }
+  .role-mp        { @apply bg-blue-50 text-blue-700 border-blue-200; }
+  .role-mla       { @apply bg-teal/20 text-navy border-teal-dark/30; }
+  .role-sarpanch  { @apply bg-amber-50 text-amber-800 border-amber-200; }
+  .role-gramsevak { @apply bg-emerald-50 text-emerald-700 border-emerald-200; }
+  .role-admin     { @apply bg-slate-900 text-white border-slate-900; }
+  .role-user      { @apply bg-slate-100 text-slate-600 border-slate-200; }
+
+  .skeleton {
+    @apply bg-gradient-to-r from-slate-100 via-slate-200 to-slate-100 animate-shimmer;
+    background-size: 600px 100%;
+  }
+
+  .section { @apply py-16 lg:py-20; }
+  .container-custom { @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8; }
+  .prose-portal { @apply text-sm text-ink-60 leading-relaxed; }
+
+  .sidebar-link {
+    @apply flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium
+           transition-all duration-150 text-white/60 hover:bg-white/10 hover:text-white;
+  }
+  .sidebar-link-active { @apply bg-white/15 text-white; }
+
+  .stat-card {
+    @apply card p-5 text-center;
+  }
+  .heat-bar {
+    @apply h-2 rounded-full bg-gradient-to-r from-navy to-teal
+           transition-all duration-1000 ease-out;
+  }
+  .progress-bar {
+    @apply h-1.5 rounded-full bg-gradient-to-r from-navy to-teal
+           transition-all duration-700 ease-out;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-gradient-to-r from-teal via-teal-dark to-teal
+           bg-[length:200%_auto] bg-clip-text text-transparent animate-[gradShift_3s_ease_infinite];
+  }
+  .glass {
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+  .scrollbar-thin { scrollbar-width: thin; }
+
+  @keyframes gradShift {
+    0%,100% { background-position: 0% 50%; }
+    50%      { background-position: 100% 50%; }
+  }
+}
+
+/* Dark mode */
+.dark body { @apply bg-slate-900 text-slate-100; }
+.dark .card { @apply bg-slate-800 border-slate-700; }
+.dark .input { @apply bg-slate-800 border-slate-600 text-slate-100; }
+
+/* Leaflet reset */
+.leaflet-container { font-family: 'Inter', sans-serif; }

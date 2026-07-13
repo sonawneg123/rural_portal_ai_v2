@@ -1,22 +1,16 @@
-// src/hooks/useAnimations.js
 import { useEffect, useRef, useState, useCallback } from 'react';
 
-/* ── Scroll reveal ──────────────────────────────────────────── */
-export function useScrollReveal(threshold = 0.15, once = true) {
-  const ref = useRef(null);
-  const [visible, setVisible] = useState(false);
+export function useScrollReveal(threshold = 0.12, once = true) {
+  const ref     = useRef(null);
+  const [vis, setVis] = useState(false);
 
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
+    const el  = ref.current;
+    if (!el)  return;
     const obs = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true);
-          if (once) obs.unobserve(el);
-        } else if (!once) {
-          setVisible(false);
-        }
+        if (entry.isIntersecting) { setVis(true); if (once) obs.unobserve(el); }
+        else if (!once)             setVis(false);
       },
       { threshold }
     );
@@ -24,100 +18,51 @@ export function useScrollReveal(threshold = 0.15, once = true) {
     return () => obs.disconnect();
   }, [threshold, once]);
 
-  return [ref, visible];
+  return [ref, vis];
 }
 
-/* ── Count-up number animation ──────────────────────────────── */
-export function useCountUp(target, duration = 1400, trigger = true) {
-  const [value, setValue] = useState(0);
-  const frameRef = useRef(null);
+export function useCountUp(target, duration = 1200, trigger = true) {
+  const [val, setVal] = useState(0);
+  const frame = useRef(null);
 
   useEffect(() => {
     if (!trigger || !target) return;
     const start = performance.now();
-    const step = (now) => {
-      const elapsed  = now - start;
-      const progress = Math.min(elapsed / duration, 1);
-      // easeOutExpo
-      const ease = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
-      setValue(Math.floor(ease * target));
-      if (progress < 1) frameRef.current = requestAnimationFrame(step);
+    const step  = (now) => {
+      const p    = Math.min((now - start) / duration, 1);
+      const ease = 1 - Math.pow(2, -10 * p);
+      setVal(Math.floor(ease * target));
+      if (p < 1) frame.current = requestAnimationFrame(step);
     };
-    frameRef.current = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(frameRef.current);
+    frame.current = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(frame.current);
   }, [target, duration, trigger]);
 
-  return value;
+  return val;
 }
 
-/* ── Hover state helper ─────────────────────────────────────── */
-export function useHover() {
-  const [hovered, setHovered] = useState(false);
-  const handlers = {
-    onMouseEnter: () => setHovered(true),
-    onMouseLeave: () => setHovered(false),
-  };
-  return [hovered, handlers];
-}
-
-/* ── Stagger children delays ────────────────────────────────── */
-export function useStaggerDelay(count, base = 0.07) {
-  return Array.from({ length: count }, (_, i) => ({
-    animationDelay: `${i * base}s`,
-    animationFillMode: 'both',
-  }));
-}
-
-/* ── Progress bar fill ──────────────────────────────────────── */
-export function useProgressFill(target, trigger = true, duration = 1200) {
-  const [width, setWidth] = useState(0);
-
+export function useDebounce(value, delay = 350) {
+  const [debounced, setDebounced] = useState(value);
   useEffect(() => {
-    if (!trigger) return;
-    const start = performance.now();
-    const step = (now) => {
-      const p = Math.min((now - start) / duration, 1);
-      const ease = 1 - Math.pow(1 - p, 3);
-      setWidth(Math.floor(ease * target));
-      if (p < 1) requestAnimationFrame(step);
-    };
-    requestAnimationFrame(step);
-  }, [target, trigger, duration]);
-
-  return width;
+    const t = setTimeout(() => setDebounced(value), delay);
+    return () => clearTimeout(t);
+  }, [value, delay]);
+  return debounced;
 }
 
-/* ── Ripple effect ──────────────────────────────────────────── */
-export function useRipple() {
-  const [ripples, setRipples] = useState([]);
-  const addRipple = useCallback((e) => {
-    const btn  = e.currentTarget;
-    const rect = btn.getBoundingClientRect();
-    const size = Math.max(rect.width, rect.height);
-    const x    = e.clientX - rect.left - size / 2;
-    const y    = e.clientY - rect.top  - size / 2;
-    const id   = Date.now();
-    setRipples((r) => [...r, { x, y, size, id }]);
-    setTimeout(() => setRipples((r) => r.filter((rp) => rp.id !== id)), 600);
-  }, []);
-  return [ripples, addRipple];
-}
+export function useLocalStorage(key, defaultValue) {
+  const [val, setVal] = useState(() => {
+    try {
+      const stored = localStorage.getItem(key);
+      return stored !== null ? JSON.parse(stored) : defaultValue;
+    } catch { return defaultValue; }
+  });
 
-/* ── Typewriter ─────────────────────────────────────────────── */
-export function useTypewriter(text, speed = 50, trigger = true) {
-  const [displayed, setDisplayed] = useState('');
-  useEffect(() => {
-    if (!trigger) return;
-    setDisplayed('');
-    let i = 0;
-    const interval = setInterval(() => {
-      if (i < text.length) {
-        setDisplayed(text.slice(0, ++i));
-      } else {
-        clearInterval(interval);
-      }
-    }, speed);
-    return () => clearInterval(interval);
-  }, [text, speed, trigger]);
-  return displayed;
+  const setStored = useCallback((v) => {
+    const next = typeof v === 'function' ? v(val) : v;
+    setVal(next);
+    try { localStorage.setItem(key, JSON.stringify(next)); } catch {}
+  }, [key, val]);
+
+  return [val, setStored];
 }
